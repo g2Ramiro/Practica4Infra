@@ -1,0 +1,8 @@
+{
+	"name": "broken-math-b1d1",
+	"main": "src/index.ts",
+	"compatibility_date": "<COMPATIBILITY_DATE>",
+	"observability": {
+		"enabled": true,
+	},
+}
