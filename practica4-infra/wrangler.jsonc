@@ -1,7 +1,7 @@
 {
 	"name": "broken-math-b1d1",
 	"main": "src/index.ts",
-	"compatibility_date": "<COMPATIBILITY_DATE>",
+	"compatibility_date": "2026-09-17",
 	"observability": {
 		"enabled": true,
 	},
