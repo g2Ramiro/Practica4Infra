@@ -19,11 +19,14 @@ jobs:
         with:
           node-version: 22
           cache: npm
+          cache-dependency-path: 'practica4-infra/package-lock.json'
 
       - name: Install dependencies
+        working-directory: ./practica4-infra # Entra a la carpeta
         run: npm ci
 
       - name: Run unit tests
+        working-directory: ./practica4-infra # Entra a la carpeta
         run: npm test -- --run
 
       - name: Deploy to Cloudflare Workers
@@ -31,3 +34,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: 'practica4-infra'
