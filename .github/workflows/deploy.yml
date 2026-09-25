@@ -22,33 +22,34 @@ jobs:
           cache-dependency-path: 'practica4-infra/package-lock.json'
 
       - name: Install dependencies
-        working-directory: ./practica4-infra # Entra a la carpeta
+        working-directory: ./practica4-infra
         run: npm ci
 
-      - name: Run unit tests
-        working-directory: ./practica4-infra # Entra a la carpeta
-        run: npm test -- --run
+      #  Ejecuta pruebas unitarias y genera reporte de cobertura
+      - name: Run unit tests and generate coverage
+        working-directory: ./practica4-infra
+        run: npx vitest run --coverage --coverage.provider=istanbul
 
+      # Publica el resultado
+      - name: Publish Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: practica4-infra/coverage/
+
+      #Desplegar en producción
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: 'practica4-infra'
-      # Agregar una task para las UAT
+          environment: 'production' # ESTO DEFINE EL STAGE DE PRODUCCIÓN
+
+      #Task para las UAT apuntando a Prod
       - name: Run UAT (User Acceptance Testing)
         run: |
-          echo "Ejecutando prueba de aceptación del usuario..."
-          echo "Haciendo petición a la URL de producción para comprobar si responde:"
-
-          # curl -f hace que el pipeline falle si la página da error (ej. 404 o 500)
-          curl -f -s https://broken-math-b1d1.callecaracol234.workers.dev/users
-
+          echo "Ejecutando prueba de aceptación del usuario en PRODUCCIÓN..."
+          curl -f -s https://broken-math-b1d1-prod.callecaracol234.workers.dev/users
           echo ""
-          echo "La base de datos responde correctamente en internet."
-          # REQUISITO: Ejecutar pruebas unitarias y Generar el reporte de cobertura
-
-      # Ejecutar pruebas unitarias y Generar el reporte de cobertura
-      - name: Run unit tests and generate coverage
-        working-directory: ./practica4-infra
-        run: npx vitest run --coverage --coverage.provider=istanbul
+          echo "¡UAT superado! El entorno de PRODUCCIÓN responde correctamente."

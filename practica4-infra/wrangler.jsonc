@@ -6,10 +6,28 @@
 		"enabled": true,
 	},
 	"d1_databases": [
-    {
-      "binding": "p6",
-      "database_name": "practica6",
-      "database_id": "156a8ba6-adfd-4adf-9606-38dbdef5fc1d"
+		{
+			"binding": "p6",
+			"database_name": "practica6",
+			"database_id": "156a8ba6-adfd-4adf-9606-38dbdef5fc1d"
+		},
+		{
+			"binding": "p6_prod",
+			"database_name": "p6-prod",
+			"database_id": "eaa36ebc-469e-4fce-836f-841698c1540d",
+			"remote": true
+		}
+	],
+	"env": {
+    "production": {
+      "name": "broken-math-b1d1-prod",
+      "d1_databases": [
+        {
+          "binding": "p6",
+          "database_name": "p6-prod",
+          "database_id": "eaa36ebc-469e-4fce-836f-841698c1540d"
+        }
+      ]
     }
-  ]
+  }
 }
