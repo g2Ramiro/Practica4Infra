@@ -1,18 +1,25 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+export interface Env {
+  p6: D1Database;
+}
 
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response("Hello Ramiro Santos Rojas!");
-	},
-} satisfies ExportedHandler<Env>;
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+
+    // Creamos una ruta específica para leer los usuarios
+    if (url.pathname === "/users" && request.method === "GET") {
+      try {
+        // 2. Preparamos y ejecutamos la consulta SQL
+        const { results } = await env.p6.prepare("SELECT * FROM users").all();
+
+        // 3. Devolvemos los resultados en formato JSON
+        return Response.json(results);
+      } catch (e) {
+        return new Response("Error al leer la base de datos", { status: 500 });
+      }
+    }
+
+    // Ruta por defecto
+    return new Response("¡Hola! Ve a /users para leer la base de datos.");
+  },
+};
