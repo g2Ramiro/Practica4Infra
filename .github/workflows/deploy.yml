@@ -51,4 +51,4 @@ jobs:
       # Ejecutar pruebas unitarias y Generar el reporte de cobertura
       - name: Run unit tests and generate coverage
         working-directory: ./practica4-infra
-        run: npx vitest run --coverage
+        run: npx vitest run --coverage --coverage.provider=istanbul
