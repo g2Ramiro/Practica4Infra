@@ -53,3 +53,10 @@ jobs:
           curl -f -s https://broken-math-b1d1-prod.callecaracol234.workers.dev/users
           echo ""
           echo "¡UAT superado! El entorno de PRODUCCIÓN responde correctamente."
+          
+      - name: Run unit tests and generate coverage
+        working-directory: ./practica4-infra
+        run: npx vitest run --coverage --coverage.provider=istanbul
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
