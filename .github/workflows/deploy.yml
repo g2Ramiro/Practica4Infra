@@ -52,7 +52,9 @@ jobs:
       # Task para las UAT apuntando a Prod
       - name: Run UAT (User Acceptance Testing)
         run: |
+          echo "Esperando 10 segundos para que Cloudflare propague el despliegue..."
+          sleep 10
           echo "Ejecutando prueba de aceptación del usuario en PRODUCCIÓN..."
-          curl -f -s https://broken-math-b1d1-prod.callecaracol234.workers.dev/users
+          curl -f -v https://broken-math-b1d1-prod.callecaracol234.workers.dev/users
           echo ""
           echo "¡UAT superado! El entorno de PRODUCCIÓN responde correctamente."
