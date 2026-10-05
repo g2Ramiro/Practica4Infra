@@ -25,19 +25,22 @@ jobs:
         working-directory: ./practica4-infra
         run: npm ci
 
-      #  Ejecuta pruebas unitarias y genera reporte de cobertura
+      # Ejecuta pruebas unitarias y genera reporte de cobertura con credenciales inyectadas
       - name: Run unit tests and generate coverage
         working-directory: ./practica4-infra
-        run: npx vitest run --coverage --coverage.provider=istanbul
+        run: |
+          export CLOUDFLARE_API_TOKEN="${{ secrets.CLOUDFLARE_API_TOKEN }}"
+          export CLOUDFLARE_ACCOUNT_ID="${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          npx vitest run --coverage --coverage.provider=istanbul
 
-      # Publica el resultado
+      # Publica el resultado como artefacto
       - name: Publish Coverage Report
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: practica4-infra/coverage/
 
-      #Desplegar en producción
+      # Desplegar en producción
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
@@ -46,17 +49,10 @@ jobs:
           workingDirectory: 'practica4-infra'
           environment: 'production' # ESTO DEFINE EL STAGE DE PRODUCCIÓN
 
-      #Task para las UAT apuntando a Prod
+      # Task para las UAT apuntando a Prod
       - name: Run UAT (User Acceptance Testing)
         run: |
           echo "Ejecutando prueba de aceptación del usuario en PRODUCCIÓN..."
           curl -f -s https://broken-math-b1d1-prod.callecaracol234.workers.dev/users
           echo ""
           echo "¡UAT superado! El entorno de PRODUCCIÓN responde correctamente."
-          
-      - name: Run unit tests and generate coverage
-        working-directory: ./practica4-infra
-        run: npx vitest run --coverage --coverage.provider=istanbul
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
